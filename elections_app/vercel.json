@@ -2,13 +2,13 @@
   "version": 2,
   "builds": [
     {
-      "src": "elections_app/ff.py",
+      "src": "elections_app/app/routers/elections_app_local_run.py",
       "use": "@vercel/python"}
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "elections_app/ff.py"
+      "dest": "elections_app/app/routers/elections_app_local_run.py"
     }
   ]
 }
