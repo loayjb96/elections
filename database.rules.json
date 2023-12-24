@@ -1,7 +1,0 @@
-{
-  "rules": {
-    ".read": true,
-    ".write": true,
-    ".indexOn": ["מס קלפי","תעודת זהות"]
-  }
-}
