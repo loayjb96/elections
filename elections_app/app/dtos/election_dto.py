@@ -4,9 +4,9 @@ from elections_app.utils import BaseDTODict
 
 
 class ElectionsRequest(BaseDTODict):
-    id: str
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
+    identity_number: Optional[str] = None
+    ballot_number: Optional[str] = None
+    ballot_order_number: Optional[str] = None
 
 
 class ContactsElectionResponse(BaseDTODict):
