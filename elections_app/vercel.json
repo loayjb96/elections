@@ -2,15 +2,13 @@
   "version": 2,
   "builds": [
     {
-      "src": "elections_app/app/routers/main.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "50mb" }
-    }
+      "src": "elections_app/ff.py",
+      "use": "@vercel/python"}
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "elections_app/app/routers/main.py"
+      "dest": "elections_app/ff.py"
     }
   ]
 }
