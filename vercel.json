@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "elections_app/app/routers/**/*.py",
+      "src": "elections_app/app/routers/main.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "elections_app/app/routers/v1_elections.py"
+      "dest": "elections_app/app/routers/main.py"
     }
   ]
 }
