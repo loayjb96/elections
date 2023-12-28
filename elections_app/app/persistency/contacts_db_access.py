@@ -30,3 +30,11 @@ class ContactsDbAccess(BaseDbAccess):
                 return session.query(Contact).filter(Contact.ballot_order_number == search_value).all()
             else:
                 raise ValueError("Invalid search criterion")
+
+    def get_all(self, page: int = 1, page_size: int = 25):
+        with Session(self.engine) as session:
+            # Calculate offset
+            offset = (page - 1) * page_size
+            # Query with limit and offset for pagination
+            return session.query(Contact).offset(offset).limit(page_size).all()
+
