@@ -1,7 +1,7 @@
 import csv
 from typing import List
 
-from elections_app.app.dtos.election_dto import ElectionsRequest, ContactsElectionResponse
+from elections_app.app.dtos.election_dto import ElectionsRequest, ContactsElectionResponse, UpdateContactRequest
 from elections_app.app.persistency.contacts_db_access import ContactsDbAccess
 
 
@@ -34,7 +34,7 @@ class Elections:
                 street=record.street_name,  # Assuming street_name is the correct field
                 house_number=record.house_number,
                 ballot=record.ballot_number,
-                voted=False  # Assuming default value as False
+                voted=record.voted or False
             ))
         return filtered_records
 
@@ -52,6 +52,14 @@ class Elections:
                 street=record.street_name,  # Assuming street_name is the correct field
                 house_number=record.house_number,
                 ballot=record.ballot_number,
-                voted=False  # Assuming default value as False
+                voted=record.voted or False # Assuming default value as False
             ))
         return all_contacts
+
+    def update_contact_voted(self, request: UpdateContactRequest):
+
+        # Search for records using the new method
+        record = self.db_access.update_contact_voted_status(request.id,
+                                                            request.ballot_order_id, request.voted)
+        if record:
+            return True

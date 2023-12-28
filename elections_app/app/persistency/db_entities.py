@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy import Column, Integer, String, create_engine, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -19,6 +19,7 @@ class Contact(Base):
     house_number = Column(String)
     ballot_order_number = Column(String)
     postal_code = Column(String)
+    voted = Column(Boolean)
 
 # Database connection
 DATABASE_URL = 'postgresql://default:J1cGL3KPoBUt@ep-calm-union-38725535-pooler.us-east-1.postgres.vercel-storage.com:5432/verceldb'

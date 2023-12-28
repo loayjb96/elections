@@ -17,4 +17,10 @@ class ContactsElectionResponse(BaseDTODict):
     street: Optional[str]
     house_number: Optional[str]
     ballot: Optional[str]
-    voted: Optional[bool] = False
+    voted: Optional[bool]
+
+
+class UpdateContactRequest(BaseDTODict):
+    id: Optional[str] = None
+    ballot_order_id: Optional[str] = None
+    voted: bool
