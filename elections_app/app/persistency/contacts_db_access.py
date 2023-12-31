@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
 
 from elections_app.app.persistency.base_repo_db_access import BaseDbAccess
@@ -38,10 +39,21 @@ class ContactsDbAccess(BaseDbAccess):
 
     def get_all(self, page: int = 1, page_size: int = 25):
         with Session(self.engine) as session:
-            # Calculate offset
+            # Query to count the total number of rows
+            total_rows = session.query(func.count(Contact.identity_number)).scalar()
+            total_pages = -(-total_rows // page_size)  # Ceiling division to calculate total pages
+
+            # Calculate offset for pagination
             offset = (page - 1) * page_size
+
             # Query with limit and offset for pagination
-            return session.query(Contact).offset(offset).limit(page_size).all()
+            contacts = session.query(Contact).offset(offset).limit(page_size).all()
+
+            return {
+                "contacts": contacts,
+                "total_rows": total_rows,
+                "total_pages": total_pages
+            }
 
     def update_contact_voted_status(self, id: Optional[str], ballot_order_id: Optional[str], voted: bool):
         with Session(self.engine) as session:

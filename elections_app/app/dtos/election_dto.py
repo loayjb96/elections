@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from elections_app.utils import BaseDTODict
 
@@ -9,7 +9,7 @@ class ElectionsRequest(BaseDTODict):
     ballot_order_number: Optional[str] = None
 
 
-class ContactsElectionResponse(BaseDTODict):
+class ContactInfo(BaseDTODict):
     id: str
     first_name: Optional[str]
     last_name: Optional[str]
@@ -18,6 +18,12 @@ class ContactsElectionResponse(BaseDTODict):
     house_number: Optional[str]
     ballot: Optional[str]
     voted: Optional[bool]
+
+
+class ContactsElectionResponse(BaseDTODict):
+    results: List[Optional[ContactInfo]]
+    total_rows: Optional[int]
+    total_pages: Optional[int]
 
 
 class UpdateContactRequest(BaseDTODict):

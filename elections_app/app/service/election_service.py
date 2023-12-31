@@ -1,7 +1,8 @@
 import csv
 from typing import List
 
-from elections_app.app.dtos.election_dto import ElectionsRequest, ContactsElectionResponse, UpdateContactRequest
+from elections_app.app.dtos.election_dto import ElectionsRequest, ContactsElectionResponse, UpdateContactRequest, \
+    ContactInfo
 from elections_app.app.persistency.contacts_db_access import ContactsDbAccess
 
 
@@ -38,13 +39,16 @@ class Elections:
             ))
         return filtered_records
 
-    def get_all(self, page: int) -> List[ContactsElectionResponse]:
+    def get_all(self, page: int) -> ContactsElectionResponse:
         # Retrieve all records from the database
-        all_records = self.db_access.get_all(page)  # Assuming get_all_contacts is the method to fetch all records
+        results = self.db_access.get_all(page)
+        all_records = results.get('contacts')
+        total_rows = results.get('total_rows')
+        total_pages = results.get('total_pages')
         all_contacts = []
 
         for record in all_records:
-            all_contacts.append(ContactsElectionResponse(
+            all_contacts.append(ContactInfo(
                 id=record.identity_number,
                 first_name=record.first_name,
                 last_name=record.last_name,
@@ -52,9 +56,9 @@ class Elections:
                 street=record.street_name,  # Assuming street_name is the correct field
                 house_number=record.house_number,
                 ballot=record.ballot_number,
-                voted=record.voted or False # Assuming default value as False
+                voted=record.voted or False,
             ))
-        return all_contacts
+        return ContactsElectionResponse(results=all_contacts, total_pages=total_pages,total_rows=total_rows)
 
     def update_contact_voted(self, request: UpdateContactRequest):
 

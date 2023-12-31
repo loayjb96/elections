@@ -22,7 +22,7 @@ def contact_enrichment(contacts_enrichment_request: ElectionsRequest, unused_req
 
 
 @v1_elections_routes.get('/data',
-                         response_model=List[ContactsElectionResponse],
+                         response_model=ContactsElectionResponse,
                          description="contact information",
                          response_model_exclude_none=True)
 def get_all_contact_enrichment(page: int = Query(1, alias="page")):
