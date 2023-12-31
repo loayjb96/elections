@@ -1,7 +1,8 @@
 import logging
-from typing import Optional
+from operator import or_
+from typing import Optional, Dict, List
 
-from sqlalchemy import func
+from sqlalchemy import func, desc, asc
 from sqlalchemy.exc import SQLAlchemyError
 
 from elections_app.app.persistency.base_repo_db_access import BaseDbAccess
@@ -37,17 +38,33 @@ class ContactsDbAccess(BaseDbAccess):
             else:
                 raise ValueError("Invalid search criterion")
 
-    def get_all(self, page: int = 1, page_size: int = 25):
+    def get_all(self, page: int = 1, page_size: int = 25, filters: Dict[str, str] = {}, sort: str = None) -> Dict:
         with Session(self.engine) as session:
-            # Query to count the total number of rows
-            total_rows = session.query(func.count(Contact.identity_number)).scalar()
+            # Construct the base query
+            query = session.query(Contact)
+
+            # Apply filters
+            for attr, value in filters.items():
+                if hasattr(Contact, attr):
+                    query = query.filter(getattr(Contact, attr).ilike(f"%{value}%"))
+
+            # Apply sorting
+            if sort:
+                for sort_crit in sort.split(','):
+                    sort_field, _, sort_order = sort_crit.partition(':')
+                    if hasattr(Contact, sort_field):
+                        if sort_order.lower() == 'desc':
+                            query = query.order_by(desc(getattr(Contact, sort_field)))
+                        else:
+                            query = query.order_by(asc(getattr(Contact, sort_field)))
+
+            # Count the total number of rows (with filters applied)
+            total_rows = query.count()
             total_pages = -(-total_rows // page_size)  # Ceiling division to calculate total pages
 
-            # Calculate offset for pagination
+            # Apply pagination
             offset = (page - 1) * page_size
-
-            # Query with limit and offset for pagination
-            contacts = session.query(Contact).offset(offset).limit(page_size).all()
+            contacts = query.offset(offset).limit(page_size).all()
 
             return {
                 "contacts": contacts,
@@ -77,5 +94,3 @@ class ContactsDbAccess(BaseDbAccess):
                 # Depending on how you want to handle errors, you might raise an exception here
                 # or return a specific value indicating an error occurred.
                 return None
-
-

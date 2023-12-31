@@ -1,6 +1,6 @@
 import logging
 from fastapi import HTTPException
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Request, Query
 
@@ -26,9 +26,28 @@ def contact_enrichment(contacts_enrichment_request: ElectionsRequest, unused_req
                          response_model=ContactsElectionResponse,
                          description="contact information",
                          response_model_exclude_none=True)
-def get_all_contact_enrichment(page: int = Query(1, alias="page")):
+def get_all_contact_enrichment(
+    page: int = Query(1, alias="page"),
+    identity_number: Optional[str] = None,
+    last_name: Optional[str] = None,
+    first_name: Optional[str] = None,
+    father_name: Optional[str] = None,
+    ballot_number: Optional[str] = None,
+    sort: Optional[str] = None
+):
     election_service = Elections()
-    result = election_service.get_all(page=page)
+
+    # Collect filters in a dictionary, excluding None values
+    filters = {
+        "identity_number": identity_number,
+        "last_name": last_name,
+        "first_name": first_name,
+        "father_name": father_name,
+        "ballot_number": ballot_number
+        }
+    filters = {k: v for k, v in filters.items() if v is not None}
+
+    result = election_service.get_all(page=page, filters=filters, sort=sort)
     return result
 
 

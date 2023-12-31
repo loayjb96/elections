@@ -1,5 +1,5 @@
 import csv
-from typing import List
+from typing import List, Dict
 
 from elections_app.app.dtos.election_dto import ElectionsRequest, ContactsElectionResponse, UpdateContactRequest, \
     ContactInfo
@@ -39,9 +39,9 @@ class Elections:
             ))
         return filtered_records
 
-    def get_all(self, page: int) -> ContactsElectionResponse:
+    def get_all(self, page: int, filters: Dict, sort: str) -> ContactsElectionResponse:
         # Retrieve all records from the database
-        results = self.db_access.get_all(page)
+        results = self.db_access.get_all(filters=filters, page=page, sort=sort,page_size=25)
         all_records = results.get('contacts')
         total_rows = results.get('total_rows')
         total_pages = results.get('total_pages')
@@ -58,7 +58,7 @@ class Elections:
                 ballot=record.ballot_number,
                 voted=record.voted or False,
             ))
-        return ContactsElectionResponse(results=all_contacts, total_pages=total_pages,total_rows=total_rows)
+        return ContactsElectionResponse(results=all_contacts, total_pages=total_pages, total_rows=total_rows)
 
     def update_contact_voted(self, request: UpdateContactRequest):
 
