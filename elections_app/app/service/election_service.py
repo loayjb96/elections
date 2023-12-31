@@ -11,7 +11,7 @@ class Elections:
     def __init__(self):
         self.db_access = ContactsDbAccess({})
 
-    def get_contact_details(self, request: ElectionsRequest) -> List[ContactsElectionResponse]:
+    def get_contact_details(self, request: ElectionsRequest) -> List[ContactInfo]:
         # Determine the search criterion and value from the request
         if request.identity_number:
             criterion, value = 'identity_number', request.identity_number
@@ -27,7 +27,7 @@ class Elections:
         filtered_records = []
 
         for record in all_records:
-            filtered_records.append(ContactsElectionResponse(
+            filtered_records.append(ContactInfo(
                 id=record.identity_number,
                 first_name=record.first_name,
                 last_name=record.last_name,
